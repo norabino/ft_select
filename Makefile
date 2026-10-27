@@ -4,7 +4,7 @@ CFLAGS  = -Wall -Wextra -Werror -g
 INC     = -I includes -I libft/includes
 LIBFT   = libft/libft.a
 LDLIBS  = -lncurses
-SRCS    = src/main.c src/state.c
+SRCS    = src/main.c src/state.c src/terminal.c
 
 OBJS    = $(SRCS:src/%.c=obj/%.o)
 

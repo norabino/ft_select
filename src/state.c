@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/16 13:09:21 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/16 13:10:42 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/19 16:15:38 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_select	*get_sel(void)
 int	ft_error(char *str)
 {
 	ft_putstr_fd(str, 2);
+
 	return (1);
 }
 
