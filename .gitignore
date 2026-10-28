@@ -3,3 +3,5 @@ obj/
 *.a
 ft_select
 .bonus
+valgrind.log
+vg*.txt
