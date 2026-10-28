@@ -4,7 +4,11 @@ CFLAGS  = -Wall -Wextra -Werror -g
 INC     = -I includes -I libft/includes
 LIBFT   = libft/libft.a
 LDLIBS  = -lncurses
-SRCS    = src/main.c src/state.c src/terminal.c
+VGFLAGS = --leak-check=full --show-leak-kinds=all --track-fds=yes \
+		  --suppressions=ncurses.supp --log-file=valgrind.log
+ARGS    ?= a b c d
+SRCS    = src/main.c src/keys1.c src/keys2.c src/terminal.c src/parsing.c src/print.c \
+			src/memory.c src/signal.c
 
 OBJS    = $(SRCS:src/%.c=obj/%.o)
 
@@ -26,8 +30,13 @@ clean:
 
 fclean: clean
 	$(MAKE) -C libft fclean
-	rm -f $(NAME)
+	rm -f $(NAME) valgrind.log
 
 re: fclean all
 
-.PHONY: all libft clean fclean re
+#utilisation : make valgrind ARGS="un deux trois" avec tes propres arguments
+valgrind: all
+	-valgrind $(VGFLAGS) ./$(NAME) $(ARGS)
+	@cat valgrind.log
+
+.PHONY: all libft clean fclean re valgrind

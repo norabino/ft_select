@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/16 13:11:14 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/26 16:47:27 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/28 16:30:39 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/ioctl.h>
+# include <signal.h>
+
 
 typedef struct s_item
 {
@@ -34,9 +37,11 @@ typedef struct s_select
 	int		cursor;
 	int		maxlen;
 	int		fd;
+	int		escaped;
 	int		term_ready;
-	struct termios	orig;
-	struct termios	raw;
+	struct	winsize ws;
+	struct	termios	orig;
+	struct	termios	raw;
 }	t_select;
 
 enum INPUTS {
@@ -48,19 +53,44 @@ enum INPUTS {
 	DOWN,
 	RIGHT,
 	LEFT,
-	SUPPR
+	DELETE
 };
 
+
 t_select	*get_sel(void);
-
 int			init_items(t_select *s, int argc, char **argv);
-int			init_terminal(t_select *s);
 
+int			identify_input(char *tab, int nb);
+int			key_pressed(t_select *s, int input);
+
+int			terminfo_exec(char *cmd, int col, int line);
 int			read_inputs(t_select *s);
+int			init_terminal(t_select *s);
+void		check_cursor(t_select *s);
+void		restore_terminal(t_select *s);
 
+
+void 		space(t_select *s);
+void		enter(t_select *s);
+void		escape(t_select *s);
+int			delete(t_select *s);
+void		upkey(t_select *s);
+void		downkey(t_select *s);
+void		rightkey(t_select *s);
+void		leftkey(t_select *s);
+
+int			set_format(t_select *s, int i);
 int			ft_error(char *msg);
 void		print_items(t_select *s);
+int			ft_putchar_select(int c);
+int			print_result(t_select *s);
+int			print_elems(t_select *s);
 
 int			free_all(t_select *s);
+void		del_current_elem(t_select *s);
+
+void		init_signals(t_select *s);
+
+void		quit_select(t_select *s, int exitcode);
 
 #endif

@@ -1,96 +1,27 @@
 #include "ft_select.h"
 
-int	ft_putchar_select(int c)
-{
-	t_select *s;
-
-	s = get_sel();
-	ft_putchar_fd(c, s->fd);	
-	return (0);
-}
-
-int clear_term()
+int terminfo_exec(char *cmd, int col, int line)
 {
 	char	*cmdinfo;
+	char	*gotostr;
 
-	cmdinfo = tgetstr("cl", NULL);
+	cmdinfo = tgetstr(cmd, NULL);
 	if (!cmdinfo)
 	{
 		ft_error("error: tgetstr\n");
 		return (1);
+	}
+	if (col != -1 && line != -1)
+	{
+		gotostr = tgoto(cmdinfo, col, line);
+		cmdinfo = NULL;
+		cmdinfo = gotostr;
 	}
 	if (tputs(cmdinfo, 1, ft_putchar_select) == -1)
 	{
 		ft_error("error: tputs\n");
 		return (1);
 	}
-	return (0);
-}
-
-int identify_input(char *tab, int nb)
-{
-	if (nb <= 0)
-	{
-		return(ESCAPE);
-	}
-	if (nb == 1)
-	{
-		if (!ft_strncmp(tab, " ", nb))
-			return(SPACE);
-		else if (!ft_strncmp(tab, "\n", nb))
-			return(ENTER);
-		else if (!ft_strncmp(tab, "\033", nb))
-			return(ESCAPE);
-		else if (!ft_strncmp(tab, "\177", nb))
-			return(BACKSPACE);
-	}
-	if (nb == 3)
-	{
-		if (!ft_strncmp(tab, "\033[A", nb))
-			return(ARROW_UP);
-		else if (!ft_strncmp(tab, "\033[B", nb))
-			return(DOWN);
-		else if (!ft_strncmp(tab, "\033[C", nb))
-			return(RIGHT);
-		else if (!ft_strncmp(tab, "\033[D", nb))
-			return(LEFT);
-	}
-	if (nb == 4)
-	{
-		if (!ft_strncmp(tab, "\033[3~", nb))
-			return(SUPPR);
-	}
-	return (-1);
-}
-
-int key_pressed(int input)
-{
-	if (input == SPACE)
-		ft_printf("space\n");
-	else if (input == ENTER)
-	{
-		ft_printf("enter\n");
-		return (1);
-	}
-	else if (input == ESCAPE)
-	{
-		ft_printf("escape\n");
-		return (1);
-	}
-	else if (input == BACKSPACE)
-		ft_printf("backspace\n");
-	else if (input == ARROW_UP)
-		ft_printf("up\n");
-	else if (input == DOWN)
-		ft_printf("down\n");
-	else if (input == RIGHT)
-		ft_printf("right\n");
-	else if (input == LEFT)
-		ft_printf("left\n");
-	else if (input == SUPPR)
-		ft_printf("suppr\n");
-	else
-		ft_printf("other\n");
 	return (0);
 }
 
@@ -105,8 +36,10 @@ int read_inputs(t_select *s)
 		ft_bzero(tab, 8);
 		nb = read(s->fd, tab, 8);
 		input = identify_input(tab, nb);
-		if (key_pressed(input) == 1)
-			break;
+		if (s->count <= 0 || key_pressed(s, input) == 1)
+			break ;
+		if (print_elems(s))
+			return (1);
 	}
 	return (0);
 }
@@ -141,7 +74,7 @@ int init_terminal(t_select *s)
 	termname = getenv("TERM");
 	if (!termname)
 	{
-		ft_error("error: getenv\n");
+		ft_error("error: getenv. No environment found.\n");
 		return (1);
 	}
 	if (tgetent(NULL, termname) != 1)
@@ -149,10 +82,30 @@ int init_terminal(t_select *s)
 		ft_error("error: tgetent\n");
 		return (1);
 	}
-	if (clear_term())
+	if (terminfo_exec("vi", -1, -1))
+		return (1);
+	if (terminfo_exec("ti", -1, -1))
 		return (1);
 	s->raw = s->orig;
 	s->raw.c_lflag &= ~(ICANON | ECHO);
-	tcsetattr(s->fd, TCSANOW, &s->raw);	
+	s->raw.c_cc[VMIN] = 1;
+	s->raw.c_cc[VTIME] = 0;
+	tcsetattr(s->fd, TCSANOW, &s->raw);
+	s->term_ready = 1;
 	return (0);
+}
+
+void check_cursor(t_select *s)
+{
+	if (s->cursor >= s->count)
+		s->cursor = 0;
+	if (s->cursor < 0)
+		s->cursor = s->count - 1;
+}
+
+void	restore_terminal(t_select *s)
+{
+	terminfo_exec("ve", -1, -1);
+	terminfo_exec("te", -1, -1);
+	tcsetattr(s->fd, TCSANOW, &s->orig);
 }

@@ -1,41 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.c                                            :+:      :+:    :+:   */
+/*   keys2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/16 13:09:21 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/19 16:15:38 by norabino         ###   ########.fr       */
+/*   Created: 2026/10/27 17:28:41 by norabino          #+#    #+#             */
+/*   Updated: 2026/10/28 15:33:30 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-t_select	*get_sel(void)
+void	upkey(t_select *s)
 {
-	static t_select	sel;
-
-	return (&sel);
+	s->cursor--;
+	check_cursor(s);
 }
 
-int	ft_error(char *str)
+void	downkey(t_select *s)
 {
-	ft_putstr_fd(str, 2);
-
-	return (1);
+	s->cursor++;
+	check_cursor(s);
 }
 
-int	free_all(t_select *s)
+void	rightkey(t_select *s)
 {
-	int	i;
+	s->cursor += s->ws.ws_row;
+	check_cursor(s);
+}
 
-	i = 0;
-	while (i < s->count)
-	{
-		free(s->items[i].str);
-		i++;
-	}
-	free(s->items);
-	return (1);
+void	leftkey(t_select *s)
+{
+	s->cursor -= s->ws.ws_row;
+	check_cursor(s);
 }
