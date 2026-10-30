@@ -25,6 +25,9 @@ obj/%.o: src/%.c includes/ft_select.h
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
+tests: all
+	@python3 tests/run_tests.py
+
 clean:
 	$(MAKE) -C libft clean
 	rm -rf obj

@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 17:26:00 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 17:26:11 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 14:48:22 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,27 @@ void	open_term_fd(t_select *s, char *path)
 		ft_error("error: open()\n");
 }
 
+void	check_codes(void)
+{
+	char	*mandatory_codes;
+	int		i;
+	char	code[3];
+	char	*cmdinfo;
+
+	mandatory_codes = "cmclmrusme";
+	i = 0;
+	while (i < 10)
+	{
+		code[0] = mandatory_codes[i];
+		code[1] = mandatory_codes[i + 1];
+		code[2] = 0;
+		cmdinfo = tgetstr(code, NULL);
+		if (!cmdinfo)
+			ft_error("error: mandatory code (cm,cl,mr,us,me) not found.\n");
+		i += 2;
+	}
+}
+
 void	load_term_entry(void)
 {
 	char	*termname;
@@ -46,18 +67,5 @@ void	load_term_entry(void)
 		ft_error("error: getenv. No environment found.\n");
 	if (tgetent(NULL, termname) != 1)
 		ft_error("error: tgetent\n");
-}
-
-// vi : cacher curseur
-// ti : aller sur term alternatif
-void	load_raw_mode(t_select *s)
-{
-	terminfo_exec("vi", -1, -1);
-	terminfo_exec("ti", -1, -1);
-	s->raw = s->orig;
-	s->raw.c_lflag &= ~(ICANON | ECHO);
-	s->raw.c_cc[VMIN] = 1;
-	s->raw.c_cc[VTIME] = 0;
-	tcsetattr(s->fd, TCSANOW, &s->raw);
-	s->term_ready = 1;
+	check_codes();
 }

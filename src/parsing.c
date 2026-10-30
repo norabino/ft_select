@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 16:53:04 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:00:22 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 12:24:33 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	identify_input(char *tab, int nb)
 int	key_pressed(t_select *s, int input)
 {
 	if (input == -1)
-		return (0);
+		return (1);
 	if (input == SPACE)
 		space(s);
 	else if (input == ENTER)

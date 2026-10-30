@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/16 13:11:14 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:39:36 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:35:59 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ int			print_elems(t_select *s);
 void		free_all(t_select *s);
 void		del_current_elem(t_select *s);
 
-void		init_signals(t_select *s);
-void		init_sig(t_select *s, int sig, void (*handler)(int));
+void		init_signals(void);
+void		init_sig(int sig, void (*handler)(int));
 void		handle_quit(int sig);
 void		handle_resize(int sig);
 void		handle_pause(int sig);
 void		handle_resume(int sig);
 
-void		quit_select(t_select *s, int exitcode);
+void		quit_select(t_select *s, int exitcode, int printing);
 
 #endif

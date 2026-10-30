@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 16:52:32 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:36:25 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 12:45:54 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,11 @@ int	print_elems(t_select *s)
 	return (0);
 }
 
-// cl : ancien clear
-// te : revenir ecran normal
 void	print_result(t_select *s)
 {
 	int	i;
 	int	first;
 
-	terminfo_exec("cl", -1, -1);
-	terminfo_exec("te", -1, -1);
 	i = 0;
 	first = 1;
 	while (i < s->count)
@@ -72,6 +68,8 @@ void	print_result(t_select *s)
 		}
 		i++;
 	}
+	if (!first)
+		ft_putstr_fd("\n", 1);
 }
 
 int	ft_putchar_select(int c)
@@ -89,5 +87,5 @@ void	ft_error(char *str)
 
 	s = get_sel();
 	ft_putstr_fd(str, 2);
-	quit_select(s, 1);
+	quit_select(s, 1, 0);
 }

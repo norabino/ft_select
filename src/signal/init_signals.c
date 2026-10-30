@@ -6,32 +6,33 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 19:10:05 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:10:41 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:36:33 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void	init_signals(t_select *s)
+void	init_signals(void)
 {
-	init_sig(s, SIGINT, handle_quit);
-	init_sig(s, SIGQUIT, handle_quit);
-	init_sig(s, SIGTERM, handle_quit);
-	init_sig(s, SIGHUP, handle_quit);
-	init_sig(s, SIGUSR1, handle_quit);
-	init_sig(s, SIGUSR2, handle_quit);
-	init_sig(s, SIGALRM, handle_quit);
-	init_sig(s, SIGPIPE, handle_quit);
-	init_sig(s, SIGWINCH, handle_resize);
-	init_sig(s, SIGTSTP, handle_pause);
-	init_sig(s, SIGCONT, handle_resume);
+	init_sig(SIGINT, handle_quit);
+	init_sig(SIGQUIT, handle_quit);
+	init_sig(SIGTERM, handle_quit);
+	init_sig(SIGHUP, handle_quit);
+	init_sig(SIGUSR1, handle_quit);
+	init_sig(SIGUSR2, handle_quit);
+	init_sig(SIGALRM, handle_quit);
+	init_sig(SIGPIPE, handle_quit);
+	init_sig(SIGABRT, handle_quit);
+	init_sig(SIGSEGV, handle_quit);
+	init_sig(SIGBUS, handle_quit);
+	init_sig(SIGFPE, handle_quit);
+	init_sig(SIGWINCH, handle_resize);
+	init_sig(SIGTSTP, handle_pause);
+	init_sig(SIGCONT, handle_resume);
 }
 
-void	init_sig(t_select *s, int sig, void (*handler)(int))
+void	init_sig(int sig, void (*handler)(int))
 {
 	if (signal(sig, handler) == SIG_ERR)
-	{
 		ft_error("error: signal\n");
-		quit_select(s, 1);
-	}
 }

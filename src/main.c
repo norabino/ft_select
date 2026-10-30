@@ -6,17 +6,19 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/16 13:09:28 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:29:36 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:36:05 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void	quit_select(t_select *s, int exitcode)
+void	quit_select(t_select *s, int exitcode, int printing)
 {
 	if (s->term_ready)
 	{
 		restore_terminal(s);
+		if (printing)
+			print_result(s);
 		close(s->fd);
 	}
 	free_all(s);
@@ -45,13 +47,9 @@ int	main(int ac, char **av)
 	if (ac < 2)
 		ft_error("Wrong usage.\nTry: ./ft_select choice1 choice2 ...\n");
 	s = get_sel();
-	init_signals(s);
+	init_signals();
 	init_items(s, ac, av);
 	init_terminal(s);
 	ft_select(s);
-	terminfo_exec("cl", -1, -1);
-	terminfo_exec("ve", -1, -1);
-	if (!s->escaped)
-		print_result(s);
-	quit_select(s, 0);
+	quit_select(s, 0, !s->escaped);
 }

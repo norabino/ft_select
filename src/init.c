@@ -6,7 +6,7 @@
 /*   By: norabino <norabino@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 18:31:22 by norabino          #+#    #+#             */
-/*   Updated: 2026/10/29 19:27:39 by norabino         ###   ########.fr       */
+/*   Updated: 2026/10/30 12:25:03 by norabino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void	init_terminal(t_select *s)
 {
 	char	*path;
 
-	save_term_settings(s);
 	path = find_term_path();
 	open_term_fd(s, path);
+	save_term_settings(s);
 	load_term_entry();
 	load_raw_mode(s);
 }
